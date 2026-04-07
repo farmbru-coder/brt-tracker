@@ -169,35 +169,3 @@ app.post('/track', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`BRT Tracker on port ${PORT}`));
-      document.querySelectorAll('.content-item-track').forEach(item => {
-        const txt = (item.querySelector('.tracking-details-alert') || item.querySelector('.entry-body p'))?.textContent?.trim() || '';
-        if (txt) d.events.push({
-          date: item.querySelector('.entry-date')?.textContent?.trim() || '',
-          time: item.querySelector('.entry-time')?.textContent?.trim() || '',
-          place: item.querySelector('.place-track span')?.textContent?.trim() || '',
-          text: txt
-        });
-      });
-
-      const at = d.events.map(e => e.text.toLowerCase()).join(' ');
-      if (at.includes('punto di ritiro') || at.includes('fermopoint')) d.status = 'pickup';
-      else if (at.includes('consegna effettuata') || at.includes('consegnata con successo')) d.status = 'delivered';
-      else if (at.includes('in consegna') || at.includes('in viaggio')) d.status = 'transit';
-      else if (at.includes('consegna non andata a buon fine')) d.status = 'delivery_failed';
-
-      return d;
-    });
-
-    console.log(`[TRACK] Done: ${result.status} | point="${result.pickupPointName}" | ${result.events.length} events`);
-    await browser.close();
-    res.json(result);
-
-  } catch (error) {
-    console.error(`[TRACK] Error: ${error.message}`);
-    if (browser) await browser.close().catch(() => {});
-    res.status(500).json({ error: error.message });
-  }
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`BRT Tracker on port ${PORT}`));
